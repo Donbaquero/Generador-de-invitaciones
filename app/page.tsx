@@ -31,17 +31,38 @@ export default function Home() {
         throw new Error('Error al generar la imagen')
       }
 
-      const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      setImageUrl(url)
+      const contentType = response.headers.get('content-type')
+      
+      if (contentType?.includes('text/html')) {
+        // Si es HTML, crear una imagen desde el HTML
+        const htmlContent = await response.text()
+        
+        // Crear un blob y descargar
+        const blob = new Blob([htmlContent], { type: 'text/html' })
+        const url = URL.createObjectURL(blob)
+        
+        // Abrir en una nueva ventana para que el usuario pueda guardar
+        const newWindow = window.open(url, '_blank')
+        if (newWindow) {
+          newWindow.focus()
+        }
+        
+        setTimeout(() => URL.revokeObjectURL(url), 1000)
+        
+      } else {
+        // Si es imagen, procesar como antes
+        const blob = await response.blob()
+        const url = URL.createObjectURL(blob)
+        setImageUrl(url)
 
-      // Descargar automáticamente
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `imagen-${name.replace(/\s+/g, '-').toLowerCase()}.png`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
+        // Descargar automáticamente
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `imagen-${name.replace(/\s+/g, '-').toLowerCase()}.png`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      }
 
     } catch (error) {
       console.error('Error:', error)
