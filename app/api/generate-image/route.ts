@@ -13,67 +13,103 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Leer la imagen base y convertirla a base64
+    // Leer la imagen base
     const imagePath = path.join(process.cwd(), 'WhatsApp Image 2026-02-05 at 7.19.06 AM.jpeg')
     const imageBuffer = await fs.readFile(imagePath)
-    const base64Image = imageBuffer.toString('base64')
     
-    // Crear un HTML con CSS para generar la imagen con texto
+    // Crear un HTML simple que muestre la imagen con texto
     const htmlContent = `
       <!DOCTYPE html>
       <html>
       <head>
+        <meta charset="UTF-8">
         <style>
           body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: #000;
-          }
-          .container {
+            background: #000000ff;
+            font-family: Georgia, serif;
+          .invitation-container {
             position: relative;
-            width: 100%;
             max-width: 800px;
-            height: auto;
-            max-height: 600px;
+            width: 100%;
           }
-          .background {
+          .background-image {
             width: 100%;
             height: auto;
-            object-fit: contain;
+            display: block;
           }
-          .text-overlay {
+          .name-overlay {
             position: absolute;
-            top: 65%;
+            bottom: 55%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             background: transparent;
             color: white;
-            padding: 0;
-            border-radius: 0;
+            padding: 5px 40px;
             font-size: 36px;
             font-style: italic;
             text-align: center;
-            font-family: Arial, sans-serif;
+            text-shadow: none;
+            white-space: nowrap;
+          }
+          .instructions {
+            margin-top: 20px;
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+          }
+          .download-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
             border: none;
-            box-shadow: none;
-            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+          }
+          .download-btn:hover {
+            background: #0056b3;
           }
         </style>
       </head>
       <body>
-        <div class="container">
-          <img src="data:image/jpeg;base64,${base64Image}" class="background" alt="Background">
-          <div class="text-overlay">${name}</div>
+        <div class="invitation-container">
+          <img src="data:image/jpeg;base64,${imageBuffer.toString('base64')}" class="background-image" alt="Invitación">
+          <div class="name-overlay">${name}</div>
         </div>
+        <div class="instructions">
+          <h3>¡Tu invitación está lista!</h3>
+          <p>Para guardar la imagen:</p>
+          <button class="download-btn" onclick="downloadImage()">Descargar Imagen</button>
+        </div>
+        
+        <script>
+          function downloadImage() {
+            const container = document.querySelector('.invitation-container');
+            html2canvas(container).then(canvas => {
+              const link = document.createElement('a');
+              link.download = 'invitacion-${name}.png';
+              link.href = canvas.toDataURL();
+              link.click();
+            }).catch(() => {
+              alert('Si no puedes descargar, haz clic derecho en la imagen y selecciona "Guardar imagen como..."');
+            });
+          }
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
       </body>
       </html>
     `
     
-    // Retornar HTML que el cliente puede procesar
+    // Retornar HTML
     return new NextResponse(htmlContent, {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
@@ -82,10 +118,8 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error generando imagen:', error)
-    console.error('Error details:', error instanceof Error ? error.message : 'Unknown error')
-    console.error('Name received:', name)
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     )
   }

@@ -31,45 +31,13 @@ export default function Home() {
         throw new Error('Error al generar la imagen')
       }
 
-      const contentType = response.headers.get('content-type')
+      const htmlContent = await response.text()
       
-      if (contentType?.includes('text/html')) {
-        // Si es HTML, crear una ventana para que el usuario guarde
-        const htmlContent = await response.text()
-        
-        // Crear una nueva ventana con el HTML
-        const newWindow = window.open('', '_blank', 'width=800,height=600')
-        if (newWindow) {
-          newWindow.document.write(htmlContent)
-          newWindow.document.close()
-          
-          // Agregar instrucciones para guardar
-          setTimeout(() => {
-            const instruction = newWindow.document.createElement('div')
-            instruction.innerHTML = `
-              <div style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; z-index: 9999;">
-                <p>Para guardar: Haz clic derecho → Guardar imagen como...</p>
-                <p>O usa Ctrl+S (Cmd+S en Mac)</p>
-                <button onclick="window.close()" style="margin-top: 10px; padding: 5px 10px;">Cerrar</button>
-              </div>
-            `
-            newWindow.document.body.appendChild(instruction)
-          }, 500)
-        }
-        
-      } else {
-        // Si es imagen, procesar como antes
-        const blob = await response.blob()
-        const url = URL.createObjectURL(blob)
-        setImageUrl(url)
-
-        // Descargar automáticamente
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `imagen-${name.replace(/\s+/g, '-').toLowerCase()}.png`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
+      // Abrir en nueva ventana
+      const newWindow = window.open('', '_blank', 'width=900,height=700')
+      if (newWindow) {
+        newWindow.document.write(htmlContent)
+        newWindow.document.close()
       }
 
     } catch (error) {
