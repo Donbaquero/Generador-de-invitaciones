@@ -35,29 +35,32 @@ export async function POST(request: NextRequest) {
           }
           .container {
             position: relative;
-            width: 800px;
-            height: 600px;
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            max-height: 600px;
           }
           .background {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            object-fit: contain;
           }
           .text-overlay {
             position: absolute;
-            top: 50%;
+            top: 65%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.9);
-            color: black;
-            padding: 20px 40px;
-            border-radius: 10px;
-            font-size: 48px;
-            font-weight: bold;
+            background: transparent;
+            color: white;
+            padding: 0;
+            border-radius: 0;
+            font-size: 36px;
+            font-style: italic;
             text-align: center;
             font-family: Arial, sans-serif;
-            border: 3px solid black;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            border: none;
+            box-shadow: none;
+            width: 100%;
           }
         </style>
       </head>

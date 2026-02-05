@@ -34,20 +34,28 @@ export default function Home() {
       const contentType = response.headers.get('content-type')
       
       if (contentType?.includes('text/html')) {
-        // Si es HTML, crear una imagen desde el HTML
+        // Si es HTML, crear una ventana para que el usuario guarde
         const htmlContent = await response.text()
         
-        // Crear un blob y descargar
-        const blob = new Blob([htmlContent], { type: 'text/html' })
-        const url = URL.createObjectURL(blob)
-        
-        // Abrir en una nueva ventana para que el usuario pueda guardar
-        const newWindow = window.open(url, '_blank')
+        // Crear una nueva ventana con el HTML
+        const newWindow = window.open('', '_blank', 'width=800,height=600')
         if (newWindow) {
-          newWindow.focus()
+          newWindow.document.write(htmlContent)
+          newWindow.document.close()
+          
+          // Agregar instrucciones para guardar
+          setTimeout(() => {
+            const instruction = newWindow.document.createElement('div')
+            instruction.innerHTML = `
+              <div style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; z-index: 9999;">
+                <p>Para guardar: Haz clic derecho → Guardar imagen como...</p>
+                <p>O usa Ctrl+S (Cmd+S en Mac)</p>
+                <button onclick="window.close()" style="margin-top: 10px; padding: 5px 10px;">Cerrar</button>
+              </div>
+            `
+            newWindow.document.body.appendChild(instruction)
+          }, 500)
         }
-        
-        setTimeout(() => URL.revokeObjectURL(url), 1000)
         
       } else {
         // Si es imagen, procesar como antes
