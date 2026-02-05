@@ -84,7 +84,7 @@ export default function Home() {
 
         {imageUrl && (
           <div className="image-preview">
-            <h3>Tu imagen personalizada:</h3>
+            <h3>Tu invitacion personalizada:</h3>
             <img src={imageUrl} alt={`Imagen personalizada para ${name}`} />
             <br />
             <br />
