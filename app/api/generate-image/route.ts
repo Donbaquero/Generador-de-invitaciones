@@ -17,10 +17,10 @@ export async function POST(request: NextRequest) {
     const imagePath = path.join(process.cwd(), 'WhatsApp Image 2026-02-05 at 7.19.06 AM.jpeg')
     
     // Crear SVG para el texto
-    const svgText = `
+    const svgText = Buffer.from(`
       <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
         <text x="550" y="500" 
-              font-family="Georgia, serif" 
+              font-family="Arial, Helvetica, sans-serif" 
               font-size="60" 
               font-style="italic"
               font-weight="bold" 
@@ -29,12 +29,12 @@ export async function POST(request: NextRequest) {
           ${name}
         </text>
       </svg>
-    `
+    `, 'utf8')
 
     // Combinar imagen base con texto usando Sharp
     const imageBuffer = await sharp(imagePath)
       .composite([{
-        input: Buffer.from(svgText),
+        input: svgText,
         top: 0,
         left: 0
       }])
