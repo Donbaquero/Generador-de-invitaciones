@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
           }
           .name-overlay {
             position: absolute;
-            bottom: 55%;
+            bottom: 60%;
             left: 50%;
             transform: translateX(-50%);
             background: transparent;
