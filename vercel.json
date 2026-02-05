@@ -1,9 +1,0 @@
-{
-  "functions": {
-    "app/api/generate-image/route.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next"
-}
