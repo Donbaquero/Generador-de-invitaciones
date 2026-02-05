@@ -21,10 +21,11 @@ export async function POST(request: NextRequest) {
     // Cargar la imagen base
     const imagePath = path.join(process.cwd(), 'WhatsApp Image 2026-02-05 at 7.19.06 AM.jpeg')
     
-    // Crear SVG simple sin fuentes que causan problemas
+    // Crear SVG simple con fuente sans-serif
     const svgText = `
       <svg width="800" height="600">
         <text x="400" y="300" 
+              font-family="sans-serif"
               font-size="48" 
               font-weight="bold" 
               text-anchor="middle" 
