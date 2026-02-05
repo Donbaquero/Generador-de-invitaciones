@@ -16,18 +16,15 @@ export async function POST(request: NextRequest) {
     // Cargar la imagen base
     const imagePath = path.join(process.cwd(), 'WhatsApp Image 2026-02-05 at 7.19.06 AM.jpeg')
     
-    // Crear SVG para el texto
+    // Crear SVG para el texto - versión simplificada
     const svgText = Buffer.from(`
-      <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+      <svg width="800" height="600">
         <text x="550" y="500" 
-              font-family="Arial, Helvetica, sans-serif" 
+              font-family="sans-serif" 
               font-size="60" 
-              font-style="italic"
               font-weight="bold" 
               text-anchor="middle" 
-              fill="white">
-          ${name}
-        </text>
+              fill="white">${name}</text>
       </svg>
     `, 'utf8')
 
@@ -51,8 +48,11 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error generando imagen:', error)
+    console.error('Error details:', error instanceof Error ? error.message : 'Unknown error')
+    console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace')
+    console.error('Name received:', name)
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: 'Error interno del servidor', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }
